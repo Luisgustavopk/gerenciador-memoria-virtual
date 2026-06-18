@@ -81,7 +81,16 @@ int handle_page_fault(int page)
         exit(1);
     }
 
-    (void) page;
+    fseek(backing, page * PAGE_SIZE, SEEK_SET);
+
+    fread(physical_memory[frame],
+       sizeof(signed char),
+       PAGE_SIZE,
+       backing);
+
+       frame_to_page[frame] = page;
+
+       page_table_update(page, frame);
 
     return frame;
 }
@@ -104,9 +113,7 @@ signed char read_memory(int frame, int offset)
      * Retornar o byte armazenado em physical_memory[frame][offset].
      */
 
-    (void) frame;
-    (void) offset;
-    return 0;
+     return physical_memory[frame][offset];
 }
 
 int get_page_loaded_in_frame(int frame)

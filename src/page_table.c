@@ -21,8 +21,12 @@ int page_table_lookup(int page)
      * Caso contrário, retornar -1.
      */
 
-    (void) page;
+    if (page_table[page].valid) {
+        return page_table[page].frame;
+}
+
     return -1;
+
 }
 
 void page_table_update(int page, int frame)
@@ -32,8 +36,9 @@ void page_table_update(int page, int frame)
      * Atualizar a entrada da tabela de páginas.
      */
 
-    (void) page;
-    (void) frame;
+    page_table[page].frame = frame;
+    page_table[page].valid = 1;
+
 }
 
 void page_table_invalidate(int page)
@@ -43,7 +48,9 @@ void page_table_invalidate(int page)
      * Invalidar a entrada da página.
      */
 
-    (void) page;
+    page_table[page].valid = 0;
+    page_table[page].frame = -1;
+
 }
 
 void page_table_set_reference(int page)
@@ -53,7 +60,8 @@ void page_table_set_reference(int page)
      * Marcar o bit de referência da página como 1.
      */
 
-    (void) page;
+    page_table[page].reference_bit = 1;
+
 }
 
 void page_table_update_aging(void)

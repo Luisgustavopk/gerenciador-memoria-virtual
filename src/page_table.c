@@ -86,6 +86,21 @@ void page_table_update_aging(void)
      *     aging_counter |= 0x80;
      * reference_bit = 0;
      */
+
+     for (int i = 0; i < PAGE_TABLE_SIZE; i++) {
+
+    if (page_table[i].valid) {
+
+        page_table[i].aging_counter >>= 1;
+
+        if (page_table[i].reference_bit) {
+            page_table[i].aging_counter |= 0x80;
+        }
+
+        page_table[i].reference_bit = 0;
+    }
+  }
+
 }
 
 int page_table_get_frame(int page)

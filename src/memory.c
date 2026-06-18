@@ -65,9 +65,12 @@ int handle_page_fault(int page)
          * Invalidar tabela e TLB.
          */
 
-        (void) victim_page;
+        frame = page_table_get_frame(victim_page);
 
-        frame = 0;
+        page_table_invalidate(victim_page);
+
+        tlb_remove(victim_page);
+        
     }
 
     /*
@@ -103,7 +106,27 @@ int select_victim_page(void)
      * Em caso de empate, qualquer critério consistente pode ser usado.
      */
 
-    return 0;
+    int victim_page = -1;
+    unsigned char smallest_counter = 255;
+
+    for (int i = 0; i < PAGE_TABLE_SIZE; i++) {
+
+        if (page_table_is_valid(i)) {
+
+            unsigned char counter =
+                page_table_get_aging_counter(i);
+
+            if (victim_page == -1 ||
+                counter < smallest_counter) {
+
+                smallest_counter = counter;
+                victim_page = i;
+            }
+        }
+    }
+
+    return victim_page;
+
 }
 
 signed char read_memory(int frame, int offset)

@@ -20,6 +20,11 @@ void tlb_init(void)
     fifo_next = 0;
 }
 
+  /*
+   * Procurar a página no TLB.
+   * Se encontrar uma entrada válida, retornar o quadro.
+   * Caso contrário, retornar -1.
+   */
 int tlb_lookup(int page)
 {
     for (int i = 0; i < TLB_SIZE; i++) {
@@ -32,30 +37,49 @@ int tlb_lookup(int page)
     return -1;
 }
 
+/*
+ * Política:
+ * - Se a página já estiver no TLB, atualizar o frame.
+ * - Se existir entrada inválida, usar essa entrada.
+ * - Se o TLB estiver cheio, substituir usando FIFO.
+ */
 void tlb_insert(int page, int frame)
 {
-    /*
-     * TODO:
-     * Inserir uma entrada no TLB.
-     *
-     * Política:
-     * - Se a página já estiver no TLB, atualizar o frame.
-     * - Se existir entrada inválida, usar essa entrada.
-     * - Se o TLB estiver cheio, substituir usando FIFO.
-     */
+    for (int i = 0; i < TLB_SIZE; i++) {
 
-    (void) page;
-    (void) frame;
+        if (tlb[i].valid && tlb[i].page == page) {
+            tlb[i].frame = frame;
+            return;
+        }
+    }
+
+    for (int i = 0; i < TLB_SIZE; i++) {
+
+        if (!tlb[i].valid) {
+
+            tlb[i].page = page;
+            tlb[i].frame = frame;
+            tlb[i].valid = 1;
+
+            return;
+        }
+    }
+
+    tlb[fifo_next].page = page;
+    tlb[fifo_next].frame = frame;
+    tlb[fifo_next].valid = 1;
+
+    fifo_next = (fifo_next + 1) % TLB_SIZE;
 }
 
 void tlb_remove(int page)
+/*
+ * TODO:
+ * Invalidar uma entrada do TLB associada à página informada.
+ * Essa função deve ser usada quando uma página for removida
+ * da memória física.
+ */
 {
-    /*
-     * TODO:
-     * Invalidar uma entrada do TLB associada à página informada.
-     * Essa função deve ser usada quando uma página for removida
-     * da memória física.
-     */
 
     (void) page;
 }

@@ -72,16 +72,25 @@ void tlb_insert(int page, int frame)
     fifo_next = (fifo_next + 1) % TLB_SIZE;
 }
 
-void tlb_remove(int page)
 /*
- * TODO:
  * Invalidar uma entrada do TLB associada à página informada.
  * Essa função deve ser usada quando uma página for removida
  * da memória física.
  */
+void tlb_remove(int page)
 {
 
-    (void) page;
+    for (int i = 0; i < TLB_SIZE; i++) {
+
+    if (tlb[i].valid && tlb[i].page == page) {
+
+        tlb[i].valid = 0;
+        tlb[i].page = -1;
+        tlb[i].frame = -1;
+
+        return;
+    }
+}
 }
 
 void tlb_clear(void)

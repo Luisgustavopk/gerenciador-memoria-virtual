@@ -15,18 +15,18 @@ void statistics_init(void)
 
 void count_address(void)
 {
-    /*TODO: Implementar contador total_addresses*/
+    total_addresses++;
 }
 
 void count_page_fault(void)
 {
-    /*TODO: Implementar contador page_faults*/
+    page_faults++;
 }
 
 void count_tlb_hit(void)
 {
     
-    /*TODO: Implementar contador tlb_hits*/
+   tlb_hits++;
 }
 
 int get_total_addresses(void)

@@ -65,7 +65,7 @@ int main(void)
         /*
         * TODO: Implementar cálculo do physical_address.
         */
-        int physical_address = 0;
+        int physical_address = (frame << 8) | offset;
         signed char value = read_memory(frame, offset);
 
         printf("Logical address: %d Physical address: %d Value: %d\n",
